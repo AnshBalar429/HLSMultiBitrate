@@ -106,7 +106,13 @@ export default function VideoUpload() {
         />
       </div>
 
-      
+      {/* Thumbnail Preview */}
+      {thumbnail && (
+        <div>
+          <p className="text-sm">Thumbnail preview:</p>
+          <img src={thumbnail} alt="Video thumbnail" className="mt-2 rounded" />
+        </div>
+      )}
 
       {/* Upload Button & Progress */}
       <button
