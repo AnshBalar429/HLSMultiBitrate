@@ -13,8 +13,8 @@ const container   = "uploads";
 
 export async function GET(req: NextRequest) {
   const sharedKeyCred = new StorageSharedKeyCredential(accountName, accountKey);
-
-  const blobName = `${uuidv4()}.mp4`;
+  const videoId = uuidv4();
+  const blobName = `${videoId}.mp4`;
   const sasOptions = {
     containerName: container,
     blobName,
@@ -27,5 +27,5 @@ export async function GET(req: NextRequest) {
   const token = generateBlobSASQueryParameters(sasOptions, sharedKeyCred).toString();
   const url = `https://${accountName}.blob.core.windows.net/${container}/${blobName}?${token}`;
 
-  return NextResponse.json({ uploadUrl: url, blobName });
+  return NextResponse.json({ uploadUrl: url, blobName, videoId });
 }
