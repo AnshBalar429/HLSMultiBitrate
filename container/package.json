@@ -1,0 +1,24 @@
+{
+  "name": "container",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/index.js",
+    "dev": "npm run build && npm run start"
+  },
+  "dependencies": {
+    "@azure/storage-blob": "^12.15.0",
+    "@azure/data-tables": "^13.0.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5",
+    "@types/node": "^18.0.0",
+    "@types/uuid": "^9.0.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}

@@ -69,7 +69,6 @@ async function transcodeToHLS(inputPath: string, outputDir: string) {
   });
 }
 
-
 async function uploadHLS(outputDir: string, videoId: string) {
   console.log(`📤 Uploading HLS files to blob container '${outputContainer}'`);
   const cred = new StorageSharedKeyCredential(accountName, accountKey);
