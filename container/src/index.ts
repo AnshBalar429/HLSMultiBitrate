@@ -69,3 +69,48 @@ async function transcodeToHLS(inputPath: string, outputDir: string) {
   });
 }
 
+
+async function uploadHLS(outputDir: string, videoId: string) {
+  console.log(`📤 Uploading HLS files to blob container '${outputContainer}'`);
+  const cred = new StorageSharedKeyCredential(accountName, accountKey);
+  const blobService = new BlobServiceClient(
+    `https://${accountName}.blob.core.windows.net`,
+    cred
+  );
+  console.log("4");
+  const container = blobService.getContainerClient(outputContainer);
+  await container.createIfNotExists();
+
+  // upload each rendition folder and master playlist
+  const renditions = ["v0","v1","v2"];
+  for (const r of renditions) {
+    const dir = path.join(outputDir, r);
+    for (const file of await fs.readdir(dir)) {
+      const filePath = path.join(dir, file);
+      const blobPath = `${videoId}/${r}/${file}`;
+      await container.getBlockBlobClient(blobPath).uploadFile(filePath);
+      console.log(`• Uploaded ${blobPath}`);
+    }
+  }
+  console.log("5");
+  // master playlist
+  await container.getBlockBlobClient(`${videoId}/master.m3u8`)
+    .uploadFile(path.join(outputDir,"master.m3u8"));
+  console.log("✅ All HLS files uploaded");
+
+  return `https://${accountName}.blob.core.windows.net/${outputContainer}/${videoId}/master.m3u8`;
+}
+
+async function main() {
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "transcode-"));
+  const { localPath, videoId } = await downloadBlob(tmp);
+  const outDir = path.join(tmp, "hls");
+  await transcodeToHLS(localPath, outDir);
+  await uploadHLS(outDir, videoId);
+  console.log("🚀 Transcoding workflow finished!");
+}
+
+main().catch(err => {
+  console.error("❌ Error:", err);
+  console.error(err.stack);
+});
