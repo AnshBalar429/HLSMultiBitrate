@@ -1,10 +1,12 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 
 type SasResponse = {
   uploadUrl: string;
   blobName: string;
+  videoId : string
 };
 
 export default function VideoUpload() {
@@ -15,6 +17,7 @@ export default function VideoUpload() {
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const router = useRouter();
 
   // Generate thumbnail once file is set
   useEffect(() => {
@@ -47,7 +50,7 @@ export default function VideoUpload() {
       // 1. Get SAS URL
       const res = await fetch("/api/get-upload-sas");
       if (!res.ok) throw new Error("Failed to get SAS");
-      const { uploadUrl }: SasResponse = await res.json();
+      const { uploadUrl, videoId }: SasResponse = await res.json();
 
       // 2. PUT via XHR to track progress
       await new Promise<void>((resolve, reject) => {
@@ -69,6 +72,8 @@ export default function VideoUpload() {
       });
 
       setProgress(100);
+      router.push(`/video/${videoId}`);
+      
       // Optionally notify parent or UI that processing has started…
     } catch (err: any) {
       console.error(err);
