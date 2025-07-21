@@ -72,9 +72,12 @@ export default function VideoUpload() {
       });
 
       setProgress(100);
+
+      // Once upload completes going to video page
+
       router.push(`/video/${videoId}`);
       
-      // Optionally notify parent or UI that processing has started…
+      
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Upload error");
