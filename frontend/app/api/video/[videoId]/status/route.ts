@@ -7,9 +7,9 @@ const container = process.env.OUTPUT_CONTAINER || "outputs";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { videoId: string } }
-) {
-
+  { params }: { params: Promise<{ videoId: string }> }
+): Promise<NextResponse> {
+  
   const { videoId } = await params;
   const cred = new StorageSharedKeyCredential(acct, key);
   const client = new BlobServiceClient(`https://${acct}.blob.core.windows.net`, cred);
