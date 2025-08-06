@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "message",
+      "type": "queueTrigger",
+      "direction": "in",
+      "queueName": "transcode-queue",
+      "connection": "AzureWebJobsStorage"
+    }
+  ],
+  "scriptFile": "../dist/index.js" 
+}
